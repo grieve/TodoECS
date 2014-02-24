@@ -9,7 +9,7 @@ var systems = {
 var entity;
 var formEntity = new FormEntity({
     container: 'main',
-    tmmplate: require('./templates/form.hbs'),
+    template: require('./templates/form.hbs'),
     fields: {
         'measure': ""
     },
