@@ -27,7 +27,7 @@ gulp.task('lint', function(){
         .pipe(plugins.jshint.reporter('jshint-stylish'));
 });
 
-gulp.task('scripts', ['lint'], function(){
+gulp.task('scripts-debug', ['lint'], function(){
     return gulp.src('src/main.js', {read: false})
         .pipe(plugins.plumber())
         .pipe(plugins.browserify({
@@ -40,13 +40,27 @@ gulp.task('scripts', ['lint'], function(){
         .pipe(plugins.notify({message: 'JS compiled'}));
 });
 
+gulp.task('scripts-prod', ['lint'], function(){
+    return gulp.src('src/main.js', {read: false})
+        .pipe(plugins.plumber())
+        .pipe(plugins.browserify({
+            debug: false,
+            transform: ['hbsfy'],
+            exclude: ['jquery', 'underscore']
+        }))
+        .pipe(plugins.concat('build.js'))
+        .pipe(plugins.uglify())
+        .pipe(gulp.dest('dist/'))
+        .pipe(plugins.notify({message: 'JS compiled'}));
+});
+
 gulp.task('default', function(){
-    gulp.start('styles', 'scripts');
+    gulp.start('styles', 'scripts-debug');
 });
 
 
 gulp.task('watch', function(){
     gulp.watch('src/scss/**/*.scss', ['styles']);
-    gulp.watch('src/**/*.js', ['scripts']);
-    gulp.watch('src/**/*.hbs', ['scripts']);
+    gulp.watch('src/**/*.js', ['scripts-debug']);
+    gulp.watch('src/**/*.hbs', ['scripts-debug']);
 });

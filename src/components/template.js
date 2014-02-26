@@ -21,4 +21,9 @@ var TemplateComponent = function(config){
 
 TemplateComponent.prototype = Object.create(BaseComponent.prototype);
 
+TemplateComponent.prototype.set = function(attr, value){
+    this.context[attr] = value;
+    this._isDirty = true;
+};
+
 module.exports = TemplateComponent;

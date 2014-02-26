@@ -50,4 +50,11 @@ BaseEntity.prototype.removeComponent = function(component){
 
 };
 
+BaseEntity.prototype.destroy = function(){
+    this.emit('destroy', this);
+    for (var i = 0; i < this.components.length; i++){
+        this.removeComponent(this.components[i]);
+    }
+};
+
 module.exports = BaseEntity;

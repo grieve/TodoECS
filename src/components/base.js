@@ -34,7 +34,13 @@ BaseComponent.prototype.onAdd = function(entity){
 };
 
 BaseComponent.prototype.onRemove = function(){
+    console.log(2);
+    this.emit('destroy', this);
+    console.log(3);
     this.entity = null;
+    var system = SysMan.getSystem(this.config.system);
+    system.unregister(this);
+    delete this;
 };
 
 module.exports = BaseComponent;

@@ -11,12 +11,15 @@ var DomComponent = function(config){
         system: 'DomSystem',
         container: '',
         tagName: 'div',
-        className: ''
+        tagID: '',
+        className: '',
+        domEvents: {}
     };
 
     BaseComponent.call(this, config);
     this.config = _.extend(defaults, config);
     this._isDirty = true;
+    this._elContent = "";
 };
 
 DomComponent.prototype = Object.create(BaseComponent.prototype);
