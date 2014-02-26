@@ -20,6 +20,9 @@ BaseComponent.prototype = Object.create(EventEmitter.prototype);
 
 BaseComponent.prototype.register = function(){
     var system = SysMan.getSystem(this.config.system);
+    if (!system){
+        throw new Error('System not found, cannot register');
+    }
     system.register(this);
 };
 

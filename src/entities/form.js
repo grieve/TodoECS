@@ -30,8 +30,7 @@ var FormEntity = function(config){
     });
 
     this.template = new TemplateComponent({
-        template: this.config.template,
-        ignoreDataUpdates: true,
+        template: this.config.template
     });
 
     this.addComponent(this.form);

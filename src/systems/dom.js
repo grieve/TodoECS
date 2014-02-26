@@ -1,4 +1,5 @@
 var _ = require('lodash');
+var $ = require('sizzle');
 var fastdom = require('fastdom');
 
 var BaseSystem = require('./base');
@@ -19,14 +20,34 @@ var DomSystem = function(config){
 
 DomSystem.prototype = Object.create(BaseSystem.prototype);
 
-DomSystem.prototype.identifier = "DOM";
+DomSystem.prototype.identifier = "DomSystem";
 
 DomSystem.prototype.register = function(component){
-    if (!component.hasOwnProperty('_el') && !component._el){
-        throw new Error("Component is not renderable, missing '_el' property");
-    }
 
+    fastdom.write(function(){
+        component._el = document.createElement(component.config.tagName);
+        _.each(component.config.className.split(' '), function(cls){
+            if (cls){
+                component._el.classList.add(cls);
+            }
+        });
+        if (component.config.container){
+            var container = $(component.config.container);
+            if (container.length > 0){
+                container[0].appendChild(component._el);
+            }
+        }
+        if(component.config.domReady){
+            setTimeout(component.config.domReady, 100);
+        }
+    });
+
+    component.entity.on('content.update', function(evt, content){
+        component._elContent = content;
+        component._isDirty = true;
+    });
     BaseSystem.prototype.register.call(this, component);
+
 };
 
 DomSystem.prototype.update = function(){
