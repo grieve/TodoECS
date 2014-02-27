@@ -37,7 +37,6 @@ var MainEntity = function(config){
 MainEntity.prototype = Object.create(BaseEntity.prototype);
 
 MainEntity.prototype.onReady = function(){
-    console.log(1);
     this.todoList = new TodoListEntity({ container: this.section.el });
 };
 

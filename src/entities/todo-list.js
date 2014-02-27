@@ -42,8 +42,7 @@ TodoListEntity.prototype.newTodo = function(todo){
     this.todos.push(entity);
 };
 
-TodoListEntity.prototype.removeTodo = function(todo){
-    console.log(todo);
+TodoListEntity.prototype.removeTodo = function(evt, todo){
     for (var idx = 0; idx < this.todos.length; idx++){
         if (this.todos[idx] == todo){
             break;

@@ -38,7 +38,6 @@ EventEmitter.prototype.off = function(evt_cb, callback){
 };
 
 EventEmitter.prototype.emit = function(event){
-
     if(this.listeners.hasOwnProperty(event)){
         for(var i = 0; i < this.listeners[event].length; ++i){
             try {
