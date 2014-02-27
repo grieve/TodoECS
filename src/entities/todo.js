@@ -9,7 +9,7 @@ var TodoEntity = function(config){
 
     var defaults = {
         container: "",
-        todo: ""
+        task: ""
     };
 
     BaseEntity.call(this);
@@ -25,14 +25,21 @@ var TodoEntity = function(config){
         }
     });
 
+    this.data = new DataComponent({
+        properties: {
+            task: this.config.task,
+            completed: false
+        }
+    });
+
+    this.data.on('update', _.bind(this.onDataUpdate, this));
+
     this.template = new TemplateComponent({
         template: require('../templates/todo.hbs')
     });
 
-    this.template.set('todo', this.config.todo);
-    this.template.set('done', false);
-
     this.addComponent(this.dom);
+    this.addComponent(this.data);
     this.addComponent(this.template);
 
 };
@@ -42,24 +49,24 @@ TodoEntity.prototype = Object.create(BaseEntity.prototype);
 TodoEntity.prototype.onReady = function(){
 };
 
-TodoEntity.prototype.toggleDone = function(evt){
-    if(evt.target.checked){
-        this.dom.el.classList.add('completed');
+TodoEntity.prototype.toggleDone = function(state){
+    if(typeof state == "boolean"){
+        this.data.attributes.completed = state === true;
     } else {
-        this.dom.el.classList.remove('completed');
+        this.data.attributes.completed = !this.data.attributes.completed;
+    }
+}
+
+TodoEntity.prototype.onDataUpdate = function(evt){
+    this.template.setAll(this.data._model);
+    if (this.dom._el){
+        if(this.data.attributes.completed){
+            this.dom._el.classList.add('completed');
+        } else {
+            this.dom._el.classList.remove('completed');
+        }
     }
 };
-
-TodoEntity.prototype.setToggled = function(state){
-    if (state){
-        this.dom.select('.toggle').checked = true;
-        this.dom.el.classList.add('completed');
-    } else {
-        this.dom.select('.toggle').checked = false;
-        this.dom.el.classList.remove('completed');
-    }
-
-}
 
 module.exports = TodoEntity;
 

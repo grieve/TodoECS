@@ -24,6 +24,7 @@ DomSystem.prototype.identifier = "DomSystem";
 
 DomSystem.prototype.register = function(component){
 
+    var system = this;
     fastdom.write(function(){
         component._el = document.createElement(component.config.tagName);
         if(component.config.tagID){
@@ -46,24 +47,7 @@ DomSystem.prototype.register = function(component){
                 }
             }
         }
-        _.each(component.config.domEvents, function(listener, evt){
-            setTimeout(function(){
-                if (evt == "ready"){
-                    listener();
-                 } else {
-                    evt = evt.split(' ');
-                    var eventName = evt[0];
-                    var target = $(evt[1], component._el);
-                    if (target.length > 0){
-                        target = target[0];
-                    } else {
-                        target = component._el;
-                    }
-
-                    target.addEventListener(eventName, listener);
-                }
-            }, 100);
-        });
+        system.bindComponentEvents(component, true);
     });
 
     Object.defineProperty(component, 'el', {
@@ -86,6 +70,27 @@ DomSystem.prototype.register = function(component){
 
 };
 
+DomSystem.prototype.bindComponentEvents = function(component, firstBind){
+    _.each(component.config.domEvents, function(listener, evt){
+        setTimeout(function(){
+            if (firstBind && evt == "ready"){
+                listener();
+             } else {
+                evt = evt.split(' ');
+                var eventName = evt[0];
+                var target = $(evt[1], component._el);
+                if (target.length > 0){
+                    target = target[0];
+                } else {
+                    target = component._el;
+                }
+
+                target.addEventListener(eventName, listener);
+            }
+        }, 100);
+    });
+};
+
 DomSystem.prototype.unregister = function(component){
     BaseSystem.prototype.unregister.call(this, component);
     component.config.container.removeChild(component._el);
@@ -95,10 +100,13 @@ DomSystem.prototype.unregister = function(component){
 
 DomSystem.prototype.update = function(){
     BaseSystem.prototype.update.call(this);
+
+    var system = this;
     _.each(this.components, function(component){
         if (component._isDirty){
             fastdom.write(function(){
                 component._el.innerHTML = component._elContent;
+                system.bindComponentEvents(component);
             });
             component._isDirty = false;
             component.entity.emit('domRendered', component);

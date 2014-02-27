@@ -2,7 +2,6 @@ var _ = require('lodash');
 var BaseEntity = require('./base');
 var DomComponent = require('../components/dom');
 var TemplateComponent = require('../components/template');
-
 var TodoListEntity = require('./todo-list');
 
 

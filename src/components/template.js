@@ -27,7 +27,10 @@ TemplateComponent.prototype.set = function(attr, value){
 };
 
 TemplateComponent.prototype.setAll = function(values){
-    this.context = _.extend(this.context, values);
+    var component = this;
+    _.each(values, function(value, prop){
+        component.context[prop] = value;
+    });
     this._isDirty = true;
 };
 

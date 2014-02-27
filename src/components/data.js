@@ -9,31 +9,33 @@ var DataComponent = function(config){
 
     BaseComponent.call(this);
     this.config = _.extend(defaults, config);
-    this.model = this.config.properties;
 };
 
 DataComponent.prototype = Object.create(BaseComponent.prototype);
 
-DataComponent.prototype.getAttr = function(attr){
-    return this.model[attr];
+DataComponent.prototype.get = function(attr){
+    return this._model[attr];
 };
 
-DataComponent.prototype.setAttr = function(attr, value){
-    this.model[attr] = value;
-    this.entity.emit('dataUpdated', this.model, attr, value);
+DataComponent.prototype.set = function(attr, value){
+    this._model[attr] = value;
+    this.emit('update', this._model);
 };
 
 DataComponent.prototype.onAdd = function(entity){
     var component = this;
-    entity.data = {};
+    this._model = _.extend(this.config.properties);
 
+    this.attributes = new Object();
     _.each(component.config.properties, function(value, prop){
-        Object.defineProperty(entity.data, prop, {
-            get: function(){ return component.getAttr(prop); },
-            set: function(value){ component.setAttr(prop, value); },
+        Object.defineProperty(component.attributes, prop, {
+            get: function(){ return component.get(prop); },
+            set: function(value){ component.set(prop, value); },
         });
     });
+
     BaseComponent.prototype.onAdd.call(this, entity);
+    this.emit('update', this._model);
 };
 
 module.exports = DataComponent;

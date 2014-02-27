@@ -37,7 +37,7 @@ TodoListEntity.prototype.onReady = function(){
 };
 
 TodoListEntity.prototype.newTodo = function(todo){
-    var entity = new TodoEntity({container: this.list.el, todo: todo});
+    var entity = new TodoEntity({container: this.list.el, task: todo});
     entity.on('destroy', _.bind(this.removeTodo, this));
     this.todos.push(entity);
 };
@@ -55,7 +55,7 @@ TodoListEntity.prototype.removeTodo = function(evt, todo){
 
 TodoListEntity.prototype.toggleAll = function(state){
     for (var idx = 0; idx < this.todos.length; idx++){
-        this.todos[idx].setToggled(state);
+        this.todos[idx].toggleDone(state);
     }
 };
 
