@@ -35,7 +35,6 @@ TemplateSystem.prototype.update = function(){
     BaseSystem.prototype.update.call(this);
     _.each(this.components, function(component){
         if (component._isDirty){
-            console.log(component.context);
             component.rendered = component.template(component.context);
             component.entity.emit('content.update', component.rendered);
             component._isDirty = false;
