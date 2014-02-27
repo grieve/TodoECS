@@ -26,4 +26,9 @@ TemplateComponent.prototype.set = function(attr, value){
     this._isDirty = true;
 };
 
+TemplateComponent.prototype.setAll = function(values){
+    this.context = _.extend(this.context, values);
+    this._isDirty = true;
+};
+
 module.exports = TemplateComponent;
